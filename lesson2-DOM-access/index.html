@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+<head>
+	<title>Lesson 2: DOM Manipulation</title>
+	<script>
+window.onload = function(){
+	/* set up a nice javascript execution environment for the examples */
+	var examples = document.querySelectorAll('.example');
+	for (var i=0; i < examples.length; i++) {
+		var example = examples[i];
+		
+		var textarea = example.querySelector('textarea');
+		var domCode = example.querySelector('.container');
+		var script = example.querySelector('script');
+		var button = example.querySelector('button.execute');
+
+		// copy the dom code for the example to a text box for easy viewing.
+		textarea.value = domCode.innerHTML;
+
+		button.addEventListener('click', function(){
+			eval(script.textContent);
+		}, true);
+		console.log(textarea, textarea.value)
+	}
+};
+	</script>
+</head>
+<body>
+	<h1>Lesson 2: DOM Manipulation</h1>
+	<p>
+		Using a Javascript we can manipulate the DOM
+		programmatically.  This can be live in response to 
+		events like mouse movement or it could be when a webpage
+		first loads.  Scripts can be embedded right in a page, 
+		or they can be referenced in another file.  In
+		either case, the <b>&lt;script&gt;</b> tag is used.
+	</p>
+	<p>
+		For a quick introduction to Javascript, you can
+		check out <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript</a>.
+		We will assume a basic familiarity with the language, so look
+		up any syntax that doesn't make sense (after a while
+		all programming languages will start looking the same...).
+	</p>
+	<h2>Selecting Nodes</h2>
+	<p>
+		In Javascript, you can use <b>document.querySelector</b> or
+		<b>document.querySelectorAll</b> to use CSS selector syntax to get
+		a hold of a single DOM element or a list of DOM elements respectively.
+		You can then programmatically edit the element, for example,
+		change its attributes or its content, or even change its parent.
+	</p>
+	<p>
+		<b>document</b> refers to the root node for the entire DOM.
+		However, every DOM node also has a <b>querySelector</b> and <b>querySelectorAll</b>
+		method, and calling <b>querySelector</b> or <b>querySelectorAll</b>
+		on a node will restrict the search to only children of that node.
+		We will make great use of this in the examples to keep them from messing with each
+		other.
+	</p>
+	
+	<div class="example">
+		<div class="textarealabel">
+		<textarea></textarea>
+		</div>
+		<div class="containerlabel">
+		<div id="container1" class="container">
+			<div class="content">
+				<div class="left">
+					<span class="bold">bold class</span> <span class="italic">italic class</span>
+				</div>
+				<div class="right">
+					<span class="bold">bold class</span> <span class="italic">italic class</span>
+				</div>
+			</div>
+		</div>
+		</div>
+
+
+		<div class="scriptlabel">
+		<script style="display: block;" contenteditable="true">
+/* make sure our code only affects this example */
+var parent = document.querySelector('#container1');
+
+/* get an array of all things that have the class bold 
+and add an 'X' to their content */
+var boldThings = parent.querySelectorAll('.bold');
+for (var i = 0; i < boldThings.length; i++) {
+	boldThing = boldThings[i];
+	boldThing.innerHTML += "X";
+}
+
+/* find the first element with class right and add a 'Y'
+to its content */
+var rightThing = parent.querySelector('.right');
+rightThing.innerHTML += "Y";
+
+		</script>
+		<button class="execute">Execute</button>
+		</div>
+	</div>
+	
+	
+	
+	
+	<p id="css-edit-box">
+	And for good measure, the CSS for the webpage:
+		<style contenteditable="true">
+.container {
+	display: block;
+	height: 90px;
+	background: #ddd;
+}
+.left {
+	position: float;
+	float: left;
+}
+.right {
+	float: right;
+}
+.content {
+	display: block;
+	background: #eee;
+	margin: 10px;
+	height: 30px;
+	position: relative;
+}
+.bold {
+	font-weight: bold;
+}
+.italic {
+	font-style: italic;
+}
+
+style,script {
+	display: block;
+	background: #444;
+	color: #fff;
+	white-space: pre;
+	padding-left: 1em;
+	font-family: monospace;
+}
+
+.example {
+	margin: 20px;
+	padding: 10px;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+.example:before {
+	content: "Example";
+	font-size: smaller;
+	font-style: italic;
+	font-weight: bold;
+	font-color: #ccc;
+}
+.example .containerlabel:before {
+	content: "Rendered";
+	font-size: smaller;
+	font-style: italic;
+	font-weight: bold;
+	font-color: #ccc;
+	margin-left: 3em;
+}
+.example textarea {
+	display: block;
+	width: 100%;
+	height: 300px;
+}
+.example .textarealabel:before {
+	content: "HTML";
+	font-size: smaller;
+	font-style: italic;
+	font-weight: bold;
+	font-color: #ccc;
+	margin-left: 3em;
+}
+.example .scriptlabel:before {
+	content: "Javascript";
+	font-size: smaller;
+	font-style: italic;
+	font-weight: bold;
+	font-color: #ccc;
+	margin-left: 3em;
+}
+
+p {
+	margin-left: 20px;
+	max-width: 1000px;
+}
+
+p#foo {
+	color: #700;
+}
+
+p.bar {
+	color: #009;
+}
+
+/* Why doesn't this selector do
+   anything? */
+p#foo.bar {
+	color: #090;
+}
+
+i {
+	font-style: italic;
+	font-size: smaller;
+	font-family: monospace;
+	background: #ddd;
+	color: black;
+}
+
+b {
+	font-weight: bold;
+	font-family: monospace;
+	color: darkorange;
+}
+
+
+		</style>
+	</p>
+
+</body>
+
+</html>
