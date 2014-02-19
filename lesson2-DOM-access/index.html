@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>Lesson 2: DOM Manipulation</title>
+	<script src="../resources/codemirror-compressed.js"></script>
+	<link href="../resources/codemirror.css" rel="stylesheet"></link>
 	<script>
 window.onload = function(){
 	/* set up a nice javascript execution environment for the examples */
@@ -9,18 +11,40 @@ window.onload = function(){
 	for (var i=0; i < examples.length; i++) {
 		var example = examples[i];
 		
-		var textarea = example.querySelector('textarea');
 		var domCode = example.querySelector('.container');
-		var script = example.querySelector('script');
+		var script = example.querySelector('.script');
+		var error = example.querySelector('.errors');
 		var button = example.querySelector('button.execute');
 
 		// copy the dom code for the example to a text box for easy viewing.
-		textarea.value = domCode.innerHTML;
+		CodeMirror(example.querySelector('.textarealabel'), {
+			value: domCode.innerHTML,
+			mode: "text/html",
+			lineNumbers: true,
+		});
 
+		// make the script all syntax highlighted
+		var scriptcode = CodeMirror(example.querySelector('.scriptlabel'), {
+			value: script.textContent,
+			mode: "javascript",
+			lineNumbers: true
+		});
+
+		// execute whatever is in the script node when 
+		// the execute button is clicked.  Do this in a closure
+		// so we don't lose reference to the appropriate script
+		(function(scriptcode, error) {
 		button.addEventListener('click', function(){
-			eval(script.textContent);
+			try {
+				error.textContent = '';
+				error.className = error.className.replace(/load/, '').replace(/\s+/, ' ');
+				eval(scriptcode.getValue());
+			} catch (e) {
+				error.textContent = e;
+				error.className += " load";
+			}
 		}, true);
-		console.log(textarea, textarea.value)
+		})(scriptcode, error);
 	}
 };
 	</script>
@@ -61,7 +85,6 @@ window.onload = function(){
 	
 	<div class="example">
 		<div class="textarealabel">
-		<textarea></textarea>
 		</div>
 		<div class="containerlabel">
 		<div id="container1" class="container">
@@ -78,7 +101,7 @@ window.onload = function(){
 
 
 		<div class="scriptlabel">
-		<script style="display: block;" contenteditable="true">
+		<pre contenteditable="true" class="script" style="display: none;">
 /* make sure our code only affects this example */
 var parent = document.querySelector('#container1');
 
@@ -95,9 +118,10 @@ to its content */
 var rightThing = parent.querySelector('.right');
 rightThing.innerHTML += "Y";
 
-		</script>
+		</pre>
 		<button class="execute">Execute</button>
 		</div>
+		<pre class="errors"></pre>
 	</div>
 	
 	
@@ -106,10 +130,31 @@ rightThing.innerHTML += "Y";
 	<p id="css-edit-box">
 	And for good measure, the CSS for the webpage:
 		<style contenteditable="true">
+.CodeMirror {
+	overflow-y: hidden;
+	height: auto;
+}
+.errors {
+    opacity: 0;
+    color: red;
+
+    -webkit-transition: opacity 2s ease-in;
+       -moz-transition: opacity 2s ease-in;
+        -ms-transition: opacity 2s ease-in;
+         -o-transition: opacity 2s ease-in;
+            transition: opacity 2s ease-in;
+}
+
+.errors.load {
+    opacity: 1;
+}
 .container {
 	display: block;
 	height: 90px;
 	background: #ddd;
+	position: relative;
+	border: 2px solid black;
+	border-radius: 4px;
 }
 .left {
 	position: float;
@@ -123,7 +168,6 @@ rightThing.innerHTML += "Y";
 	background: #eee;
 	margin: 10px;
 	height: 30px;
-	position: relative;
 }
 .bold {
 	font-weight: bold;
@@ -132,7 +176,7 @@ rightThing.innerHTML += "Y";
 	font-style: italic;
 }
 
-style,script {
+style {
 	display: block;
 	background: #444;
 	color: #fff;
@@ -161,11 +205,6 @@ style,script {
 	font-weight: bold;
 	font-color: #ccc;
 	margin-left: 3em;
-}
-.example textarea {
-	display: block;
-	width: 100%;
-	height: 300px;
 }
 .example .textarealabel:before {
 	content: "HTML";
