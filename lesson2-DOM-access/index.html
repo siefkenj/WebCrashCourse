@@ -82,7 +82,13 @@ window.onload = function(){
 		We will make great use of this in the examples to keep them from messing with each
 		other.
 	</p>
-	
+
+	<p>
+		Read through the Javascript code for the following example and see
+		if you can figure out what it will do before hitting the <i>Execute</i>
+		button and verifying your guess.  You can also edit the Javascript code
+		and re-execute.
+	</p>
 	<div class="example">
 		<div class="textarealabel">
 		</div>
@@ -109,7 +115,7 @@ var parent = document.querySelector('#container1');
 and add an 'X' to their content */
 var boldThings = parent.querySelectorAll('.bold');
 for (var i = 0; i < boldThings.length; i++) {
-	boldThing = boldThings[i];
+	var boldThing = boldThings[i];
 	boldThing.innerHTML += "X";
 }
 
@@ -124,7 +130,148 @@ rightThing.innerHTML += "Y";
 		<pre class="errors"></pre>
 	</div>
 	
+	<h2>Event Listeners</h2>
+	<p>
+		Most Javascript is executed when a webpage loads.
+		If you want your code to be executed at a different time,
+		say in response to a user action like a 
+		<i>click</i> event or a <i>mouseenter</i> event, you must
+		define a function and then tell the web browser to call
+		that function when the desired even occurs.
+	</p>
+	<p>
+		You tell the web browser to call a certain
+		function when an event happens by using the
+		<b>addEventListener</b> method on a DOM element.
+		For example <b>foo.addEventListener('click', bar)</b>
+		would ensure that whenever the DOM element <b>foo</b>
+		was clicked, the function <b>bar</b> would be called.
+	</p>
+	<p>
+		In the <b>foo.addEventListener('click', bar)</b>
+		example, <b>bar</b> is called a <i>callback</i>.
+		Callbacks always get passed an <i>event</i> object.
+		This object contains information like when the event occurred,
+		what the event type was, and which DOM element it occurred on.
+	</p>
+	<p>
+		Which DOM element it occurred on, you say?  But 
+		if we registered the event listener with
+		<b>foo.addEventListener('click', bar)</b> wouldn't 
+		we always know that <b>foo</b> was clicked when <b>bar</b>
+		is called?  Well, that's true, but we could make a reusable
+		callback function and register it to the click event of multiple
+		DOM elements.  We could then figure out what element triggered
+		the event by referring to the <b>event.currentTarget</b>
+		attribute of the event object.
+	</p>
+	<p>
+		Look at the following example to get a better idea of 
+		what all this means.
+	</p>
+	<div class="example">
+		<div class="textarealabel">
+		</div>
+		<div class="containerlabel">
+		<div id="container2" class="container">
+			<div class="content">
+				<div class="left">
+					<span class="bold">bold class</span> <span class="italic">italic class</span>
+				</div>
+				<div class="right">
+					<span class="bold">bold class</span> <span class="italic">italic class</span>
+				</div>
+			</div>
+		</div>
+		</div>
+
+
+		<div class="scriptlabel">
+		<script contenteditable="true" class="script" style="display: none;">
+/* make sure our code only affects this example */
+var parent = document.querySelector('#container2');
+
+/* callback function that turns an element blue */
+function turnBlue(event) {
+	var element = event.currentTarget;
+	element.setAttribute('style', 'color: blue;');
+}
+
+/* get an array of all the span elements and ensure
+that turnBlue is called when they are clicked */
+var spans = parent.querySelectorAll('span');
+for (var i = 0; i < spans.length; i++) {
+	var span = spans[i];
+	span.addEventListener('click', turnBlue);
+}
+
+		</script>
+		<button class="execute">Execute</button>
+		</div>
+		<pre class="errors"></pre>
+	</div>
 	
+	<p>
+		Now it's time to have some fun.  See if you can use the
+		<b>mouseover</b> and <b>mouseout</b> events to change
+		the color of a span to blue when the mouse moves over it
+		and to red when the mouse moves away from it. (You should
+		note that you can register multiple event listeners for
+		the same event.  That means, if you click <i>Execute</i>
+		5 times and your Javascript added an event listener each
+		time, the callback will be executed 5 times every time
+		the even occurs.  The event listeners never get unregistered.
+		If you want to ensure your in a pristine state, you must
+		refresh the page).
+	</p>
+	<div class="example">
+		<div class="textarealabel">
+		</div>
+		<div class="containerlabel">
+		<div id="container3" class="container">
+			<div class="content">
+				<div class="left">
+					<span class="bold">bold class</span> <span class="italic">italic class</span>
+				</div>
+				<div class="right">
+					<span class="bold">bold class</span> <span class="italic">italic class</span>
+				</div>
+			</div>
+		</div>
+		</div>
+
+
+		<div class="scriptlabel">
+		<script contenteditable="true" class="script" style="display: none;">
+/* make sure our code only affects this example */
+var parent = document.querySelector('#container3');
+
+/* callback function that change an element's color */
+function turnBlue(event) {
+	"fill me"
+}
+function turnRed(event) {
+	"fill me"
+}
+
+/* get an array of all the span elements and ensure
+hook them all up to events */
+var spans = parent.querySelectorAll('span');
+for (var i = 0; i < spans.length; i++) {
+	var span = spans[i];
+	"fill me"
+}
+
+		</script>
+		<button class="execute">Execute</button>
+		</div>
+		<pre class="errors"></pre>
+	</div>
+
+	<p>
+		For a full list of all the fun events you can play with,
+		check out <a href="https://developer.mozilla.org/en-US/docs/Web/Reference/Events">https://developer.mozilla.org/en-US/docs/Web/Reference/Events</a>.
+	</p>
 	
 	
 	<p id="css-edit-box">
@@ -138,11 +285,11 @@ rightThing.innerHTML += "Y";
     opacity: 0;
     color: red;
 
-    -webkit-transition: opacity 2s ease-in;
-       -moz-transition: opacity 2s ease-in;
-        -ms-transition: opacity 2s ease-in;
-         -o-transition: opacity 2s ease-in;
-            transition: opacity 2s ease-in;
+    -webkit-transition: opacity .5s ease-in;
+       -moz-transition: opacity .5s ease-in;
+        -ms-transition: opacity .5s ease-in;
+         -o-transition: opacity .5s ease-in;
+            transition: opacity .5s ease-in;
 }
 
 .errors.load {
